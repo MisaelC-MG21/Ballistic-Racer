@@ -2,43 +2,44 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletHell : MonoBehaviour {
-
+public class BulletHell : MonoBehaviour
+{
     public float hellDuration;
 
     public GameObject[] normalGuns;
-
     public GameObject hellGunsGimbal;
 
     public Animator anim;
 
-
     bool continuousFire;
-    
 
     UltCharge ultCharge;
     PlayerInput input;
 
-	// Use this for initialization
-	void Start () {
+    void Start()
+    {
         ultCharge = GetComponent<UltCharge>();
         input = GetComponent<PlayerInput>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if(ultCharge.ultCharged) {
-            if(input.powerUp) {
+    }
+
+    void Update()
+    {
+        if (ultCharge.ultCharged)
+        {
+            if (input.powerUp)
+            {
                 StartCoroutine(RaiseHell());
             }
         }
 
-        if(continuousFire) {
+        if (continuousFire)
+        {
             input.shoot = true;
         }
-	}
+    }
 
-    IEnumerator RaiseHell() {
+    IEnumerator RaiseHell()
+    {
         RotateGimbal();
         continuousFire = true;
         yield return new WaitForSeconds(hellDuration);
@@ -46,18 +47,22 @@ public class BulletHell : MonoBehaviour {
         continuousFire = false;
     }
 
-    void RotateGimbal() {
+    void RotateGimbal()
+    {
         anim.SetBool("Rotate", true);
-        foreach(GameObject gun in normalGuns) {
+        foreach (GameObject gun in normalGuns)
+        {
             gun.SetActive(false);
         }
         hellGunsGimbal.SetActive(true);
     }
 
-    void StopRotation() {
+    void StopRotation()
+    {
         anim.SetBool("Rotate", false);
         hellGunsGimbal.SetActive(false);
-        foreach(GameObject gun in normalGuns) {
+        foreach (GameObject gun in normalGuns)
+        {
             gun.SetActive(true);
         }
     }

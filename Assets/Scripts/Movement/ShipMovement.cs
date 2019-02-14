@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class ShipMovement : MonoBehaviour
 {
     public float speed;
@@ -20,7 +19,7 @@ public class ShipMovement : MonoBehaviour
     public float boostAcceleration;
     public float maxBoostSpeed;
     public float boostEnergyDrain;
-    
+
     [Header("Ship Banking and Turning Radius")]
     public float bankingAngle;
     public float turnAngle;
@@ -58,66 +57,62 @@ public class ShipMovement : MonoBehaviour
     float drag;
     bool isOnGround;
 
-    
-
     bool reverse;
     bool boost;
     PlayerHealth playerHealth;
 
+    [HideInInspector] public bool emp;
 
-
-    [HideInInspector]public bool emp;
-
-    
-
-    // Start is called before the first frame update
     void Start()
     {
-
-        
         playerHealth = GetComponentInChildren<PlayerHealth>();
         shipRigidbody = GetComponent<Rigidbody>();
         input = GetComponent<PlayerInput>();
 
         drag = acceleration / maxSpeed;
-
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
-        
         speed = Vector3.Dot(shipRigidbody.velocity, transform.forward);
 
-
         Hover();
-        if(!emp) {
+        if (!emp)
+        {
             Movement();
-        } else {
+        }
+        else
+        {
             EMPMovement();
         }
 
         ThrusterParticle();
-        
     }
 
-    void ThrusterParticle() {
-        foreach(ParticleSystem particle in thrusterParticle) {
+    void ThrusterParticle()
+    {
+        foreach (ParticleSystem particle in thrusterParticle)
+        {
             var thrusterParticleMain = particle.main;
             var thrusterParticleTrails = particle.trails;
-            if(!boost) {
-                if(input.accelerate == 0f) {
+            if (!boost)
+            {
+                if (input.accelerate == 0f)
+                {
                     thrusterParticleMain.startSize = particleStartSize;
                     thrusterParticleMain.startSpeed = particleStartSpeed;
                     thrusterParticleMain.startLifetime = particleStartLifeTime;
-                } else {
+                }
+                else
+                {
 
                     thrusterParticleMain.startSize = particleSize * input.accelerate;
                     thrusterParticleMain.startSpeed = particleSpeed * input.accelerate;
                     thrusterParticleMain.startLifetime = particleLifeTime * input.accelerate;
-
                 }
-            } else {
+            }
+            else
+            {
                 thrusterParticleMain.startSize = particleBoostSize;
                 thrusterParticleMain.startSpeed = particleBoostSpeed;
                 thrusterParticleMain.startLifetime = particleBoostLifeTime;
@@ -126,85 +121,72 @@ public class ShipMovement : MonoBehaviour
             thrusterParticleMain.startSpeed = Mathf.Clamp(thrusterParticleMain.startSpeed.constant, particleStartSpeed, particleBoostSpeed);
             thrusterParticleMain.startLifetime = Mathf.Clamp(thrusterParticleMain.startLifetime.constant, particleStartLifeTime, particleBoostLifeTime);
 
-            if(speed < 0) {
+            if (speed < 0)
+            {
                 thrusterParticleTrails.enabled = false;
-            } else {
+            }
+            else
+            {
                 thrusterParticleTrails.enabled = true;
             }
         }
     }
 
-    void Hover() {
+    void Hover()
+    {
         Vector3 normal;
-        
+
         Ray ray = new Ray(transform.position, -transform.up);
 
-
-        
-        
-
         RaycastHit hit;
-        
-        
-
-        
 
         isOnGround = Physics.Raycast(ray, out hit, maxHoveringDistance, whatIsGround);
-        
-        if(isOnGround) {
-            
-                float height = hit.distance;
 
-                normal = hit.normal.normalized;
-            
-            
+        if (isOnGround)
+        {
+            float height = hit.distance;
+
+            normal = hit.normal.normalized;
+
             float forceSmooth = hoverSmooth.Seek(hoveringDistance, height);
 
-                Vector3 force = normal * hoverPower * forceSmooth;
+            Vector3 force = normal * hoverPower * forceSmooth;
 
-                Vector3 gravity = -normal * gravityWhileHovering * height;
+            Vector3 gravity = -normal * gravityWhileHovering * height;
 
-            
+            shipRigidbody.AddForce(force, ForceMode.Acceleration);
+            shipRigidbody.AddForce(gravity, ForceMode.Acceleration);
 
-                shipRigidbody.AddForce(force, ForceMode.Acceleration);
-                shipRigidbody.AddForce(gravity, ForceMode.Acceleration);
-            
-        } else {
+        }
+        else
+        {
             normal = Vector3.up;
-            
+
             Vector3 gravity = -normal * gravityWhileFalling;
             shipRigidbody.AddForce(gravity, ForceMode.Acceleration);
         }
-        
+
         Vector3 project = Vector3.ProjectOnPlane(transform.forward, normal);
         Quaternion rotation = Quaternion.LookRotation(project, normal);
 
-        
-        shipRigidbody.MoveRotation(Quaternion.Slerp(shipRigidbody.rotation, rotation, Time.deltaTime * 5f));
-        
+        shipRigidbody.MoveRotation(Quaternion.Slerp(shipRigidbody.rotation, rotation, Time.deltaTime * 10f));
 
         float angle = bankingAngle * -input.rudder;
 
         Quaternion bodyRotation = transform.rotation * Quaternion.Euler(0f, 0f, angle);
 
         ship.rotation = Quaternion.Slerp(ship.rotation, bodyRotation, Time.deltaTime * 10f);
-
     }
 
-    void Movement() {
-
-
+    void Movement()
+    {
         //float move = speed / maxSpeed;
-
 
         float turn = turnAngle * input.rudder;
 
         Quaternion bodyRotation = transform.rotation * Quaternion.Euler(0f, turn, 0f);
-        
-
 
         transform.rotation = Quaternion.Lerp(transform.rotation, bodyRotation, Time.deltaTime * 10f);
-
 
         float driftSpeed = Vector3.Dot(shipRigidbody.velocity, transform.right);
 
@@ -212,39 +194,45 @@ public class ShipMovement : MonoBehaviour
 
         shipRigidbody.AddForce(driftFriction, ForceMode.Acceleration);
 
-        if(input.airBrake) {
+        if (input.airBrake)
+        {
             Vector3 airBrakeForce = transform.right * input.rudder * airBrakeSpeed;
             Debug.Log(airBrakeForce);
             shipRigidbody.AddForce(airBrakeForce, ForceMode.Acceleration);
         }
 
-        if(input.accelerate <= 0f) {
+        if (input.accelerate <= 0f)
+        {
             shipRigidbody.velocity *= decceleration;
-            
         }
 
-        if(!isOnGround) {
+        if (!isOnGround)
+        {
             return;
         }
 
-        if(input.brake > 0) {
+        if (input.brake > 0)
+        {
             shipRigidbody.velocity *= brakingSpeed;
-            
         }
-        
-        
-        if(input.brake <= 0) {
-            
-            if(input.boost && playerHealth.currentHealth > 10) {
+
+        if (input.brake <= 0)
+        {
+            if (input.boost && playerHealth.currentHealth > 10)
+            {
                 float thruster = boostAcceleration * 1f - drag * Mathf.Clamp(speed, 0f, maxBoostSpeed);
                 shipRigidbody.AddForce(transform.forward * thruster, ForceMode.Acceleration);
-                if(!boost) {
+                if (!boost)
+                {
                     InvokeRepeating("SubtractHealth", 0f, boostEnergyDrain);
                     Debug.Log("Boost");
                     boost = true;
                 }
-            } else {
-                if(speed > maxSpeed) {
+            }
+            else
+            {
+                if (speed > maxSpeed)
+                {
                     shipRigidbody.velocity *= .9f;
                 }
                 float thruster = acceleration * input.accelerate - drag * Mathf.Clamp(speed, 0f, maxSpeed);
@@ -252,30 +240,33 @@ public class ShipMovement : MonoBehaviour
                 CancelInvoke();
                 boost = false;
             }
-        } else {
-            
+        }
+        else
+        {
             float thruster = acceleration * input.brake - drag * Mathf.Clamp(speed, 0f, maxReverseSpeed);
             shipRigidbody.AddForce(transform.forward * -thruster, ForceMode.Acceleration);
         }
     }
 
-    void EMPMovement() {
-        if(speed > maxSpeed) {
+    void EMPMovement()
+    {
+        if (speed > maxSpeed)
+        {
             shipRigidbody.velocity *= .9f;
         }
         float thruster = acceleration / 2f * 1f - drag * Mathf.Clamp(speed, 0f, maxSpeed / 2f);
         shipRigidbody.AddForce(transform.forward * thruster, ForceMode.Acceleration);
     }
 
-    public IEnumerator EMPMovementTime(float time) {
+    public IEnumerator EMPMovementTime(float time)
+    {
         emp = true;
         yield return new WaitForSeconds(time);
         emp = false;
     }
 
-    void SubtractHealth() {
+    void SubtractHealth()
+    {
         playerHealth.currentHealth--;
     }
-
-    
 }

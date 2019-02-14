@@ -15,142 +15,162 @@ public class MainMenu : MonoBehaviour
     public GameObject creditUI;
     public GameObject playerSelectUI;
     public GameObject trackSelectUI;
-   // public GameObject shipSelectUI;
+
+    public GameObject onePlayerShipSelect;
+    public GameObject twoPlayerShipSelect;
+    public GameObject threePlayerShipSelect;
+    public GameObject fourPlayerShipSelect;
     //AudioSource audioData;
     public string level;
 
-    public GameObject onePCam;
-    public GameObject twoPCam;
-    public GameObject threePCam;
-    public GameObject fourPCam;
+    public PlayerManager playerManager;
 
     public Text[] pOneText;
     public Text[] pTwoText;
     public Text[] pThreeText;
     public Text pFourText;
 
-    [HideInInspector] public bool oneConfirm, twoConfirm, threeConfirm, fourConfirm;
+    public static bool p1_Confirm, p2_Confirm, p3_Confirm, p4_Confirm;
 
-    bool oneKeyboard, twoKeyboard, threeKeyboard, fourKeyboard;
+    public static bool oneKeyboard, twoKeyboard, threeKeyboard, fourKeyboard;
 
     void Start()
     {
-        MPManagerReset();
+        Reset();
        // audioData = GetComponent<AudioSource>();
         //audioData.Play(0);
         Debug.Log("started");
     }
 
-    private void Update() {
-        switch(currentState) {
+    void Update()
+    {
+        switch (currentState)
+        {
             case MenuStates.MainMenu:
-            mainUI.SetActive(true);
-            creditUI.SetActive(false);
-            playerSelectUI.SetActive(false);
-            break;
+                mainUI.SetActive(true);
+                creditUI.SetActive(false);
+                playerSelectUI.SetActive(false);
+                break;
             case MenuStates.Credits:
-            mainUI.SetActive(false);
-            creditUI.SetActive(true);
-            break;
+                mainUI.SetActive(false);
+                creditUI.SetActive(true);
+                break;
             case MenuStates.PlayerSelect:
-            mainUI.SetActive(false);
-            //shipSelectUI.SetActive(false);
-            playerSelectUI.SetActive(true);
-            trackSelectUI.SetActive(false);
-            break;
+                mainUI.SetActive(false);
+                //shipSelectUI.SetActive(false);
+                playerSelectUI.SetActive(true);
+                trackSelectUI.SetActive(false);
+                break;
             case MenuStates.TrackSelect:
-            trackSelectUI.SetActive(true);
-            playerSelectUI.SetActive(false);
-            break;
+                trackSelectUI.SetActive(true);
+                playerSelectUI.SetActive(false);
+                break;
             case MenuStates.ShipSelect:
-            trackSelectUI.SetActive(false);
-            break;
+                playerSelectUI.SetActive(false);
+                trackSelectUI.SetActive(false);
+                break;
         }
-        if(MPManager.mpManager.oneP) {
-            if(oneConfirm) {
-                MPManager.mpManager.Save();
+
+        if (playerManager.onePlayer)
+        {
+            if (p1_Confirm)
+            {
                 SceneManager.LoadScene(level);
             }
         }
-        if(MPManager.mpManager.twoP) {
-            if(oneConfirm && twoConfirm) {
-                MPManager.mpManager.Save();
+        if (playerManager.twoPlayer)
+        {
+            if (p1_Confirm && p2_Confirm)
+            {
                 SceneManager.LoadScene(level);
             }
         }
-        if(MPManager.mpManager.threeP) {
-            if(oneConfirm && twoConfirm && threeConfirm) {
-                MPManager.mpManager.Save();
+        if (playerManager.threePlayer)
+        {
+            if (p1_Confirm && p2_Confirm && p3_Confirm)
+            {
                 SceneManager.LoadScene(level);
             }
         }
-        if(MPManager.mpManager.fourP) {
-            if(oneConfirm && twoConfirm && threeConfirm && fourConfirm) {
-                MPManager.mpManager.Save();
+        if (playerManager.fourPlayer)
+        {
+            if (p1_Confirm && p2_Confirm && p3_Confirm && p4_Confirm)
+            {
                 SceneManager.LoadScene(level);
             }
         }
 
-        foreach(Text text in pOneText) {
-            if(oneKeyboard) {
+        foreach (Text text in pOneText)
+        {
+            if (oneKeyboard)
+            {
                 text.text = "Keyboard";
-            } else {
+            }
+            else
+            {
                 text.text = "Controller";
             }
         }
-        foreach(Text text in pTwoText) {
-            if(twoKeyboard) {
+        foreach (Text text in pTwoText)
+        {
+            if (twoKeyboard)
+            {
                 text.text = "Keyboard";
-            } else {
+            }
+            else
+            {
                 text.text = "Controller";
             }
         }
-        foreach(Text text in pThreeText) {
-            if(threeKeyboard) {
+        foreach (Text text in pThreeText)
+        {
+            if (threeKeyboard)
+            {
                 text.text = "Keyboard";
-            } else {
+            }
+            else
+            {
                 text.text = "Controller";
             }
         }
-
-        if(fourKeyboard) {
+        if (fourKeyboard)
+        {
             pFourText.text = "Keyboard";
-        } else {
+        }
+        else
+        {
             pFourText.text = "Controller";
         }
-
-        
-
-        MPManager.mpManager.pOneKeyboard = oneKeyboard;
-        MPManager.mpManager.pTwoKeyboard = twoKeyboard;
-        MPManager.mpManager.pThreeKeyboard = threeKeyboard;
-        MPManager.mpManager.pFourKeyboard = fourKeyboard;
-
     }
 
-    public void SetKeybaord(float controller) {
-        if(controller == 1) {
+    public void SetKeybaord(float controller)
+    {
+        if (controller == 1)
+        {
             oneKeyboard = !oneKeyboard;
             twoKeyboard = false;
             threeKeyboard = false;
             fourKeyboard = false;
         }
 
-        if(controller == 2) {
+        if (controller == 2)
+        {
             twoKeyboard = !twoKeyboard;
             oneKeyboard = false;
             threeKeyboard = false;
             fourKeyboard = false;
         }
 
-        if(controller == 3) {
+        if (controller == 3)
+        {
             threeKeyboard = !threeKeyboard;
             twoKeyboard = false;
             oneKeyboard = false;
             fourKeyboard = false;
         }
 
-        if(controller == 4) {
+        if (controller == 4)
+        {
             fourKeyboard = !fourKeyboard;
             twoKeyboard = false;
             threeKeyboard = false;
@@ -158,18 +178,23 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    public void Confirm(float playerNumber) {
-        if(playerNumber == 1) {
-            oneConfirm = true;
+    public void Confirm (float playerNumber)
+    {
+        if (playerNumber == 1)
+        {
+            p1_Confirm = true;
         }
-        if(playerNumber == 2) {
-            twoConfirm = true;
+        if (playerNumber == 2)
+        {
+            p2_Confirm = true;
         }
-        if(playerNumber == 3) {
-            threeConfirm = true;
+        if (playerNumber == 3)
+        {
+            p3_Confirm = true;
         }
-        if(playerNumber == 4) {
-            fourConfirm = true;
+        if (playerNumber == 4)
+        {
+            p4_Confirm = true;
         }
     }
 
@@ -178,44 +203,50 @@ public class MainMenu : MonoBehaviour
         currentState = MenuStates.PlayerSelect;
     }
 
-    public void PlayersSelected() {
+    public void PlayersSelected()
+    {
         currentState = MenuStates.ShipSelect;
-        if(MPManager.mpManager.oneP) {
-            onePCam.SetActive(true);
+        if (playerManager.onePlayer)
+        {
+            onePlayerShipSelect.SetActive(true);
         }
-        if(MPManager.mpManager.twoP) {
-            twoPCam.SetActive(true);
+        else if (playerManager.twoPlayer)
+        {
+            twoPlayerShipSelect.SetActive(true);
         }
-        if(MPManager.mpManager.threeP) {
-            threePCam.SetActive(true);
+        else if (playerManager.threePlayer)
+        {
+            threePlayerShipSelect.SetActive(true);
         }
-        if(MPManager.mpManager.fourP) {
-            fourPCam.SetActive(true);
+        else if (playerManager.fourPlayer)
+        {
+            fourPlayerShipSelect.SetActive(true);
         }
     }
 
-    public void TrackSelect() {
+    public void TrackSelect()
+    {
         currentState = MenuStates.TrackSelect;
     }
 
-    public void OnePlayer() {
-        MPManager.mpManager.oneP = true;
-        
+    public void OnePlayer()
+    {
+        playerManager.onePlayer = true;
     }
-    public void TwoPlayer() {
-        MPManager.mpManager.twoP = true;
-        
-        
+
+    public void TwoPlayer()
+    {
+        playerManager.twoPlayer = true;
     }
-    public void ThreePlayer() {
-        MPManager.mpManager.threeP = true;
-        
-        
+
+    public void ThreePlayer()
+    {
+        playerManager.threePlayer = true;
     }
-    public void FourPlayer() {
-        MPManager.mpManager.fourP = true;
-        
-        
+
+    public void FourPlayer()
+    {
+        playerManager.fourPlayer = true;
     }
 
     public void Credits()
@@ -225,37 +256,35 @@ public class MainMenu : MonoBehaviour
 
     public void Back()
     {
-        if(currentState == MenuStates.Credits) {
+        if (currentState == MenuStates.Credits)
+        {
             currentState = MenuStates.MainMenu;
         }
-        if(currentState == MenuStates.PlayerSelect) {
+        if (currentState == MenuStates.PlayerSelect)
+        {
             currentState = MenuStates.MainMenu;
         }
-        if(currentState == MenuStates.TrackSelect) {
+        if (currentState == MenuStates.TrackSelect)
+        {
             currentState = MenuStates.PlayerSelect;
-            onePCam.SetActive(false);
-            twoPCam.SetActive(false);
-            threePCam.SetActive(false);
-            fourPCam.SetActive(false);
 
-            MPManager.mpManager.oneP = false;
-            MPManager.mpManager.twoP = false;
-            MPManager.mpManager.threeP = false;
-            MPManager.mpManager.fourP = false;
-
-            
+            playerManager.onePlayer = false;
+            playerManager.twoPlayer = false;
+            playerManager.threePlayer = false;
+            playerManager.fourPlayer = false;
         }
-        if(currentState == MenuStates.ShipSelect) {
+        if (currentState == MenuStates.ShipSelect)
+        {
             currentState = MenuStates.TrackSelect;
-            onePCam.SetActive(false);
-            twoPCam.SetActive(false);
-            threePCam.SetActive(false);
-            fourPCam.SetActive(false);
+            onePlayerShipSelect.SetActive(false);
+            twoPlayerShipSelect.SetActive(false);
+            threePlayerShipSelect.SetActive(false);
+            fourPlayerShipSelect.SetActive(false);
 
-            oneConfirm = false;
-            twoConfirm = false;
-            threeConfirm = false;
-            fourConfirm = false;
+            p1_Confirm = false;
+            p2_Confirm = false;
+            p3_Confirm = false;
+            p4_Confirm = false;
         }
     }
 
@@ -268,17 +297,11 @@ public class MainMenu : MonoBehaviour
         #endif
     }
 
-    void MPManagerReset() {
-        MPManager.mpManager.oneP = false;
-        MPManager.mpManager.twoP = false;
-        MPManager.mpManager.threeP = false;
-        MPManager.mpManager.fourP = false;
-
-        MPManager.mpManager.pOne = 0;
-        MPManager.mpManager.pTwo = 0;
-        MPManager.mpManager.pThree = 0;
-        MPManager.mpManager.pFour = 0;
-
-        MPManager.mpManager.Save();
+    void Reset()
+    {
+        p1_Confirm = false;
+        p2_Confirm = false;
+        p3_Confirm = false;
+        p4_Confirm = false;
     }
 }

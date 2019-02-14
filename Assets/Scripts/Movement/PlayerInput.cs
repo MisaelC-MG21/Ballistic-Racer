@@ -31,9 +31,7 @@ public class PlayerInput : MonoBehaviour
 
     public int controllerNumber;
 
-    public int shipID;
-
-    [HideInInspector]public bool usingKeyboard;
+    [HideInInspector] public bool usingKeyboard;
 
     [HideInInspector] public float rudder;
     [HideInInspector] public float accelerate;
@@ -44,17 +42,16 @@ public class PlayerInput : MonoBehaviour
     [HideInInspector] public bool powerUp;
     [HideInInspector] public bool shoot;
     [HideInInspector] public bool airBrake;
+    [HideInInspector] public bool canShoot;
 
     bool clicked;
-
-    [HideInInspector]public bool canShoot;
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(AbleToShoot());
-        SetPlayers();
 
-        if(controllerNumber != 0) {
+        if (controllerNumber != 0)
+        {
             SetController();
         }
     }
@@ -62,53 +59,56 @@ public class PlayerInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(controllerNumber != 0) {
-            
-
-
-            
+        if (controllerNumber != 0)
+        {
             rudder = Input.GetAxis(steeringInput);
             accelerate = Input.GetAxis(accelerateInput);
             brake = Input.GetAxis(brakeInput);
-            
-
 
             boost = Input.GetButton(boostInput);
             powerUp = Input.GetButtonDown(powerUpInput);
-            if(canShoot) {
+            if (canShoot)
+            {
                 shoot = Input.GetButton(shootInput);
             }
             airBrake = Input.GetButton(airBrakeInput);
-            if(!usingKeyboard) {
-                if(Input.GetAxis(camViewInput) < 0) {
-                    if(!clicked) {
+            if (!usingKeyboard)
+            {
+                if (Input.GetAxis(camViewInput) < 0)
+                {
+                    if (!clicked)
+                    {
                         cameraView = true;
-
                         clicked = true;
-                    } else {
+                    }
+                    else
+                    {
                         cameraView = false;
                     }
-                } else {
+                }
+                else
+                {
                     clicked = false;
                     cameraView = false;
                 }
-            } else {
+            }
+            else
+            {
                 cameraView = Input.GetButtonDown(camViewInput);
             }
-
-
         }
-        
     }
 
-    IEnumerator AbleToShoot() {
+    IEnumerator AbleToShoot()
+    {
         yield return new WaitForSeconds(10);
         canShoot = true;
     }
 
-
-    void SetController() {
-        if(!usingKeyboard) {
+    void SetController()
+    {
+        if (!usingKeyboard)
+        {
             accelerateInput = inputNames.joystickInitial + controllerNumber + inputNames.accelerate;
             brakeInput = inputNames.joystickInitial + controllerNumber + inputNames.brake;
             steeringInput = inputNames.joystickInitial + controllerNumber + inputNames.steering;
@@ -117,7 +117,9 @@ public class PlayerInput : MonoBehaviour
             shootInput = inputNames.joystickInitial + controllerNumber + inputNames.shoot;
             airBrakeInput = inputNames.joystickInitial + controllerNumber + inputNames.airBrake;
             camViewInput = inputNames.joystickInitial + controllerNumber + inputNames.camView;
-        } else {
+        }
+        else
+        {
             accelerateInput = "K" + inputNames.accelerate;
             brakeInput = "K" + inputNames.brake;
             steeringInput = "K" + inputNames.steering;
@@ -127,79 +129,5 @@ public class PlayerInput : MonoBehaviour
             airBrakeInput = "K" + inputNames.airBrake;
             camViewInput = "K" + inputNames.camView;
         }
-    }
-
-    void SetPlayers() {
-        if(MPManager.mpManager.oneP) {
-            if(shipID == MPManager.mpManager.pOne) {
-                controllerNumber = 1;
-                if(MPManager.mpManager.pOneKeyboard) {
-                    usingKeyboard = true;
-                }
-            } else {
-                controllerNumber = 0;
-            }
-        }
-        if(MPManager.mpManager.twoP) {
-            if(shipID == MPManager.mpManager.pOne) {
-                controllerNumber = 1;
-                if(MPManager.mpManager.pOneKeyboard) {
-                    usingKeyboard = true;
-                }
-            } else if(shipID == MPManager.mpManager.pTwo) {
-                controllerNumber = 2;
-                if(MPManager.mpManager.pTwoKeyboard) {
-                    usingKeyboard = true;
-                }
-            } else {
-                controllerNumber = 0;
-            }
-        }
-        if(MPManager.mpManager.threeP) {
-            if(shipID == MPManager.mpManager.pOne) {
-                controllerNumber = 1;
-                if(MPManager.mpManager.pOneKeyboard) {
-                    usingKeyboard = true;
-                }
-            } else if(shipID == MPManager.mpManager.pTwo) {
-                controllerNumber = 2;
-                if(MPManager.mpManager.pTwoKeyboard) {
-                    usingKeyboard = true;
-                }
-            } else if(shipID == MPManager.mpManager.pThree) {
-                controllerNumber = 3;
-                if(MPManager.mpManager.pThreeKeyboard) {
-                    usingKeyboard = true;
-                }
-            } else {
-                controllerNumber = 0;
-            }
-        }
-        if(MPManager.mpManager.fourP) {
-            if(shipID == MPManager.mpManager.pOne) {
-                controllerNumber = 1;
-                if(MPManager.mpManager.pOneKeyboard) {
-                    usingKeyboard = true;
-                }
-            } else if(shipID == MPManager.mpManager.pTwo) {
-                controllerNumber = 2;
-                if(MPManager.mpManager.pTwoKeyboard) {
-                    usingKeyboard = true;
-                }
-            } else if(shipID == MPManager.mpManager.pThree) {
-                controllerNumber = 3;
-                if(MPManager.mpManager.pThreeKeyboard) {
-                    usingKeyboard = true;
-                }
-            } else if(shipID == MPManager.mpManager.pFour) {
-                controllerNumber = 4;
-                if(MPManager.mpManager.pFourKeyboard) {
-                    usingKeyboard = true;
-                }
-            } else {
-                controllerNumber = 0;
-            }
-        }
-        
     }
 }

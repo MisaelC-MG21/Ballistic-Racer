@@ -19,28 +19,15 @@ public class UltCharge : MonoBehaviour {
 
     CheckTrigger check;
 
-    PlayerInput input;
-
-    bool invokeStart;
-
-    // Use this for initialization
-    void Start () {
-        input = GetComponent<PlayerInput>();
+	// Use this for initialization
+	void Start () {
         check = GetComponentInChildren<CheckTrigger>();
-        
+        InvokeRepeating("UltimateCharge", chargeRate, chargeRate);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if(!invokeStart) {
-            if(ShipSetup.raceStarted) {
-                InvokeRepeating("UltimateCharge", chargeRate, chargeRate);
-                invokeStart = true;
-            }
-        }
-        if(input.controllerNumber != 0) {
-            ultimateSlider.value = ultPower / (ultPowerMax * 1f);
-        }
+        ultimateSlider.value = ultPower / (ultPowerMax * 1f);
 
         chargeSpeed = check.position + 10;
 

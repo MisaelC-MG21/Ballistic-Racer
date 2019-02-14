@@ -8,18 +8,19 @@ public class RacerSelection : MonoBehaviour
 {
     private GameObject[] CharacterList;
     private int index;
-    //public static string selectedShip;
+
+    public static string selectedShip_P1;
+    public static string selectedShip_P2;
+    public static string selectedShip_P3;
+    public static string selectedShip_P4;
 
     public int playerNumber;
 
     public Button[] selectionButtons;
 
-    MainMenu mainMenu;
-
     void Start()
     {
-
-        mainMenu = GetComponentInParent<MainMenu>();
+        //mainMenu = GetComponentInParent<MainMenu>();
         CharacterList = new GameObject[transform.childCount];
 
         // Create an array that holds the number of racers.
@@ -41,32 +42,40 @@ public class RacerSelection : MonoBehaviour
 
     }
 
-    private void Update() {
-        
-        if(mainMenu.oneConfirm) {
-            if(MPManager.mpManager.pOne == index && playerNumber != 1) {
-                CharacterList[MPManager.mpManager.pOne].SetActive(false);
+    void Update()
+    {
+        if (MainMenu.p1_Confirm)
+        {
+            if (selectedShip_P1 == CharacterList[index].name && playerNumber != 1)
+            {
+                //CharacterList[MPManager.mpManager.pOne].SetActive(false);
                 index++;
                 CharacterList[index].SetActive(true);
             }
         }
-        if(mainMenu.twoConfirm) {
-            if(MPManager.mpManager.pTwo == index && playerNumber != 2) {
-                CharacterList[MPManager.mpManager.pTwo].SetActive(false);
+        if (MainMenu.p2_Confirm)
+        {
+            if (selectedShip_P2 == CharacterList[index].name && playerNumber != 2)
+            {
+                //CharacterList[MPManager.mpManager.pTwo].SetActive(false);
                 index++;
                 CharacterList[index].SetActive(true);
             }
         }
-        if(mainMenu.threeConfirm) {
-            if(MPManager.mpManager.pThree == index && playerNumber != 3) {
-                CharacterList[MPManager.mpManager.pThree].SetActive(false);
+        if (MainMenu.p3_Confirm)
+        {
+            if (selectedShip_P3 == CharacterList[index].name && playerNumber != 3)
+            {
+                //CharacterList[MPManager.mpManager.pThree].SetActive(false);
                 index++;
                 CharacterList[index].SetActive(true);
             }
         }
-        if(mainMenu.fourConfirm) {
-            if(MPManager.mpManager.pFour == index && playerNumber != 4) {
-                CharacterList[MPManager.mpManager.pFour].SetActive(false);
+        if (MainMenu.p4_Confirm)
+        {
+            if (selectedShip_P4 == CharacterList[index].name && playerNumber != 4)
+            {
+                //CharacterList[MPManager.mpManager.pFour].SetActive(false);
                 index++;
                 CharacterList[index].SetActive(true);
             }
@@ -79,23 +88,31 @@ public class RacerSelection : MonoBehaviour
         CharacterList[index].SetActive(false);
 
         index--;
-        if(mainMenu.oneConfirm) {
-            if(MPManager.mpManager.pOne == index) {
+        if (MainMenu.p1_Confirm)
+        {
+            if (selectedShip_P1 == CharacterList[index].name)
+            {
                 index--;
             }
         }
-        if(mainMenu.twoConfirm) {
-            if(MPManager.mpManager.pTwo == index) {
+        if (MainMenu.p2_Confirm)
+        {
+            if (selectedShip_P2 == CharacterList[index].name)
+            {
                 index--;
             }
         }
-        if(mainMenu.threeConfirm) {
-            if(MPManager.mpManager.pThree == index) {
+        if (MainMenu.p3_Confirm)
+        {
+            if (selectedShip_P3 == CharacterList[index].name)
+            {
                 index--;
             }
         }
-        if(mainMenu.fourConfirm) {
-            if(MPManager.mpManager.pFour == index) {
+        if (MainMenu.p4_Confirm)
+        {
+            if (selectedShip_P4 == CharacterList[index].name)
+            {
                 index--;
             }
         }
@@ -105,7 +122,6 @@ public class RacerSelection : MonoBehaviour
         }
         //Toggle on current model
         CharacterList[index].SetActive(true);
-        
     }
 
     public void ToggleRight()
@@ -114,23 +130,31 @@ public class RacerSelection : MonoBehaviour
         CharacterList[index].SetActive(false);
 
         index++;
-        if(mainMenu.oneConfirm) {
-            if(MPManager.mpManager.pOne == index) {
+        if (MainMenu.p1_Confirm)
+        {
+            if (selectedShip_P1 == CharacterList[index].name)
+            {
                 index++;
             }
         }
-        if(mainMenu.twoConfirm) {
-            if(MPManager.mpManager.pTwo == index) {
+        if (MainMenu.p2_Confirm)
+        {
+            if (selectedShip_P2 == CharacterList[index].name)
+            {
                 index++;
             }
         }
-        if(mainMenu.threeConfirm) {
-            if(MPManager.mpManager.pThree == index) {
+        if (MainMenu.p3_Confirm)
+        {
+            if (selectedShip_P3 == CharacterList[index].name)
+            {
                 index++;
             }
         }
-        if(mainMenu.fourConfirm) {
-            if(MPManager.mpManager.pFour == index) {
+        if (MainMenu.p4_Confirm)
+        {
+            if (selectedShip_P4 == CharacterList[index].name)
+            {
                 index++;
             }
         }
@@ -143,30 +167,34 @@ public class RacerSelection : MonoBehaviour
     }
     public void Confirm()
     {
-        foreach(Button button in selectionButtons) {
+        foreach (Button button in selectionButtons)
+        {
             button.interactable = false;
         }
-        if(playerNumber == 1) {
-            MPManager.mpManager.pOne = index;
-            
+        if (playerNumber == 1)
+        {
+            selectedShip_P1 = CharacterList[index].name;
         }
-        if(playerNumber == 2) {
-            MPManager.mpManager.pTwo = index;
-            
+        if (playerNumber == 2)
+        {
+            selectedShip_P2 = CharacterList[index].name;
         }
-        if(playerNumber == 3) {
-            MPManager.mpManager.pThree = index;
-            
+        if (playerNumber == 3)
+        {
+            selectedShip_P3 = CharacterList[index].name;
         }
-        if(playerNumber == 4) {
-            MPManager.mpManager.pFour = index;
-            
+        if (playerNumber == 4)
+        {
+            selectedShip_P4 = CharacterList[index].name;
         }
+        //selectedShip_P1 = CharacterList[index].name;
         //SceneManager.LoadScene("Track_1");
     }
 
-    public void Back() {
-        foreach(Button button in selectionButtons) {
+    public void Back()
+    {
+        foreach (Button button in selectionButtons)
+        {
             button.interactable = true;
         }
         CharacterList[index].SetActive(false);

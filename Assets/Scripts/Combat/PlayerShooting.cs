@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerShooting : MonoBehaviour {
+public class PlayerShooting : MonoBehaviour
+{
     public int damagePerShot = 20;
     public float timeBetweenBullets = 0.15f;
     public float range = 100f;
-
 
     float timer;
     Ray shootRay = new Ray();
@@ -21,7 +21,6 @@ public class PlayerShooting : MonoBehaviour {
 
     PlayerInput input;
 
-
     void Awake()
     {
         input = GetComponentInParent<PlayerInput>();
@@ -33,11 +32,10 @@ public class PlayerShooting : MonoBehaviour {
         gunLight = GetComponent<Light>();
     }
 
-
     void Update()
     {
         timer += Time.deltaTime;
-        
+
         if (input.shoot && timer >= timeBetweenBullets && Time.timeScale != 0)
         {
             Shoot();
@@ -49,13 +47,11 @@ public class PlayerShooting : MonoBehaviour {
         }
     }
 
-
     public void DisableEffects()
     {
         gunLine.enabled = false;
         gunLight.enabled = false;
     }
-
 
     void Shoot()
     {
@@ -90,11 +86,14 @@ public class PlayerShooting : MonoBehaviour {
         }
 
         //No idea if this will work correctly, needs testing.
-        if(Physics.Raycast(shootRay, out shootHit, range, ricochetMask)) {
+        if (Physics.Raycast(shootRay, out shootHit, range, ricochetMask))
+        {
             Vector3 reflectV = Vector3.Reflect(transform.forward, shootHit.normal);
             transform.position = shootHit.point;
             transform.rotation = Quaternion.LookRotation(reflectV);
-        } else {
+        }
+        else
+        {
             gunLine.SetPosition(1, new Vector3(0f, 0f, 1f * range));
         }
     }

@@ -3,14 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EmpController : MonoBehaviour {
-    
+public class EmpController : MonoBehaviour
+{
     public float MaxBlastRadius = 60f;
     public float currentRadius;
     public float timeTillCollapse;
 
     public float empEffectTime;
-
 
     public Collider shipCollider;
     ParticleSystem electricParticle;
@@ -29,10 +28,8 @@ public class EmpController : MonoBehaviour {
     PlayerInput input;
     UltCharge ultCharge;
 
-
-
-    // Use this for initialization
-    void Start() {
+    void Start()
+    {
         shootableMask = LayerMask.NameToLayer("Shootable");
         input = GetComponentInParent<PlayerInput>();
         //EmpBlast = GetComponent<SphereCollider>();
@@ -42,27 +39,23 @@ public class EmpController : MonoBehaviour {
         //EmpRest = EmpBlast.radius;
     }
 
-    // Update is called once per frame
-    void Update() {
-        if(ultCharge.ultCharged) {
-            if(input.powerUp) {
+    void Update()
+    {
+        if (ultCharge.ultCharged)
+        {
+            if (input.powerUp)
+            {
                 bursting = true;
                 ultCharge.CancelInvoke("UltimateCharge");
                 StartCoroutine(EMPBurst());
-                
+
                 ultCharge.ultPower = 0;
             }
-            
-            
-            
         }
-
-        
-
-        
     }
 
-    void ChangeParticle(float radius, float size) {
+    void ChangeParticle(float radius, float size)
+    {
         var electricParticleMain = electricParticle.main;
         var electricParticleShape = electricParticle.shape;
 
@@ -71,62 +64,71 @@ public class EmpController : MonoBehaviour {
         electricParticleMain.startSize = size;
     }
 
-    private void Burst() {
-        
+    private void Burst()
+    {
+
     }
 
-    IEnumerator EMPBurst() {
-        while(bursting) {
-            if(currentRadius < MaxBlastRadius) {
+    IEnumerator EMPBurst()
+    {
+        while (bursting)
+        {
+            if (currentRadius < MaxBlastRadius)
+            {
                 currentRadius += Time.deltaTime * 100f;
                 EMPRange(currentRadius);
                 ChangeParticle(15f, 4f);
-            } else {
-                
+            }
+            else
+            {
                 bursting = false;
                 returning = true;
             }
             yield return null;
         }
         yield return new WaitForSeconds(timeTillCollapse);
-        while(returning) {
-            if(currentRadius > EmpRest) {
+        while (returning)
+        {
+            if (currentRadius > EmpRest)
+            {
                 currentRadius -= Time.deltaTime * 100f;
                 EMPRange(currentRadius);
-                
-            } else {
+            }
+            else
+            {
                 ultCharge.InvokeRepeating("UltimateCharge", ultCharge.chargeRate, ultCharge.chargeRate);
                 ChangeParticle(0.0001f, 1f);
                 currentRadius = EmpRest;
-                
+
                 returning = false;
             }
             yield return null;
         }
     }
 
-    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Ship" && other != shipCollider)
+        {
 
-    private void OnTriggerEnter(Collider other) {
-        if(other.tag == "Ship" && other != shipCollider) {
-            
         }
     }
 
-    void EMPRange(float radius) {
+    void EMPRange(float radius)
+    {
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
-        foreach(Collider hitCollider in hitColliders) {
-            if(hitCollider != shipCollider && hitCollider.gameObject.layer == shootableMask) {
+        foreach (Collider hitCollider in hitColliders)
+        {
+            if (hitCollider != shipCollider && hitCollider.gameObject.layer == shootableMask)
+            {
                 StartCoroutine(hitCollider.GetComponentInParent<ShipMovement>().EMPMovementTime(empEffectTime));
             }
         }
-
-        
     }
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmos()
+    {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, currentRadius);
     }
 }
-

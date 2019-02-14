@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-
 public class PlayerHealth : MonoBehaviour
 {
     public int startingHealth = 100;
@@ -35,7 +34,7 @@ public class PlayerHealth : MonoBehaviour
     float reflectCounter;
 
 
-    void Awake ()
+    void Awake()
     {
         mesh = GetComponent<MeshRenderer>();
         input = GetComponentInParent<PlayerInput>();
@@ -43,23 +42,25 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = startingHealth;
     }
 
-
-    void Update ()
+    void Update()
     {
-        if(isReflective == true) {
+        if (isReflective == true)
+        {
             reflectCounter -= Time.deltaTime;
 
-            if(reflectCounter <= 0) {
+            if (reflectCounter <= 0)
+            {
                 meshCollider.enabled = true;
                 StopReflect();
             }
         }
 
-        if(currentHealth > startingHealth) {
+        if (currentHealth > startingHealth)
+        {
             currentHealth = startingHealth;
         }
 
-        if(isInvulnerable == true)
+        if (isInvulnerable == true)
         {
             invincibilityCounter -= Time.deltaTime;
 
@@ -68,10 +69,14 @@ public class PlayerHealth : MonoBehaviour
                 isInvulnerable = false;
             }
         }
-        if(input.controllerNumber != 0) {
-            if(damaged) {
+        if (input.controllerNumber != 0)
+        {
+            if (damaged)
+            {
                 damageImage.color = flashColour;
-            } else {
+            }
+            else
+            {
                 damageImage.color = Color.Lerp(damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
             }
             damaged = false;
@@ -80,33 +85,26 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-
-
-
-    public void TakeDamage (int amount)
+    public void TakeDamage(int amount)
     {
         if (isInvulnerable == false)
         {
             damaged = true;
-
             currentHealth -= amount;
-
             //healthSlider.value = currentHealth;
         }
-        if(currentHealth <= 0 && !isDead)
+        if (currentHealth <= 0 && !isDead)
         {
-            Death ();
+            Death();
         }
     }
 
-    public void TakeDamage (int amount, Vector3 hitPoint)
+    public void TakeDamage(int amount, Vector3 hitPoint)
     {
         if (isInvulnerable == false)
         {
             damaged = true;
-
             currentHealth -= amount;
-
             //healthSlider.value = currentHealth;
         }
 
@@ -117,39 +115,41 @@ public class PlayerHealth : MonoBehaviour
     }
 
 
-    void Death ()
+    void Death()
     {
         isDead = true;
 
-        foreach(PlayerShooting playerShooting in playerShooting) {
+        foreach (PlayerShooting playerShooting in playerShooting)
+        {
             playerShooting.DisableEffects();
             playerShooting.enabled = false;
         }
-        foreach(ParticleSystem particle in particles) {
+        foreach (ParticleSystem particle in particles)
+        {
             particle.Stop();
         }
         mesh.enabled = false;
         meshCollider.enabled = false;
-       movement.enabled = false;
-
+        movement.enabled = false;
 
         StartCoroutine(StartRespawn());
     }
 
     void Respawn()
     {
-        if(isDead == true)
+        if (isDead == true)
         {
             player.transform.position = respawnPoint.transform.position;
             player.transform.rotation = respawnPoint.rotation;
             mesh.enabled = true;
             meshCollider.enabled = true;
             movement.enabled = true;
-            foreach(PlayerShooting playerShooting in playerShooting) {
+            foreach (PlayerShooting playerShooting in playerShooting)
+            {
                 playerShooting.enabled = true;
-
             }
-            foreach(ParticleSystem particle in particles) {
+            foreach (ParticleSystem particle in particles)
+            {
                 particle.Play();
             }
             currentHealth = startingHealth;
@@ -158,19 +158,21 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    IEnumerator StartRespawn() {
+    IEnumerator StartRespawn()
+    {
         yield return new WaitForSeconds(timeTillRespawn);
         Respawn();
-
     }
 
-    public void ReflectorShield() {
+    public void ReflectorShield()
+    {
         isReflective = true;
         meshCollider.enabled = false;
         reflectCounter = reflectLength;
     }
 
-    public bool StopReflect() {
+    public bool StopReflect()
+    {
         isReflective = false;
         return false;
     }
